@@ -12,17 +12,14 @@ api = FastAPI(
   title="ATRAC API"
 )
 logger = logging.getLogger("uvicorn.info")
-@api.on_event("startup")
-async def startup_event():
-  api.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-  )
-  subprocess.run(['/usr/bin/wineserver', '-p'])
 
+api.add_middleware(
+  CORSMiddleware,
+  allow_origins=["*"],
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
 
 @api.get("/")
 async def root():
@@ -79,7 +76,7 @@ def decode_atrac(background_tasks: BackgroundTasks, file: UploadFile = File()):
   output = Path(gettempdir(), str(uuid4())).absolute()
   with NamedTemporaryFile() as input:
     shutil.copyfileobj(file.file, input)
-    encoder = subprocess.run(['/usr/bin/wine', 'psp_at3tool.exe', '-d', 
+    encoder = subprocess.run(['at3tool', '-d', 
       Path(input.name), 
       output])
     background_tasks.add_task(remove_file, output, logger)
