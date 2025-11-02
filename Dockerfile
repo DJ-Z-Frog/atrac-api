@@ -11,7 +11,7 @@ FROM python:3.11-slim
 
 ENV LOG_LEVEL=
 COPY --from=builder /root/ffmpeg /usr/bin/ffmpeg
-COPY at3tool .
+COPY at3tool /usr/bin/at3tool
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 RUN mkdir /uploads
